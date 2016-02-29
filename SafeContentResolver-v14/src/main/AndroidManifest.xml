@@ -1,0 +1,7 @@
+<manifest package="de.cketti.safecontentresolver.v14"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-sdk tools:overrideLibrary="de.cketti.safecontentresolver"/>
+
+    <application/>
+</manifest>

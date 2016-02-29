@@ -1,0 +1,3 @@
+include ':SafeContentResolver'
+include ':SafeContentResolver-v14'
+include ':sample'

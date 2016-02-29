@@ -1,0 +1,20 @@
+apply plugin: 'com.android.model.library'
+
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
+
+        defaultConfig {
+            minSdkVersion.apiLevel 14
+        }
+
+        ndk {
+            moduleName "os-compat"
+        }
+    }
+}
+
+dependencies {
+    compile project(':SafeContentResolver')
+}
