@@ -28,22 +28,36 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 
 public abstract class SafeContentResolver {
     private final ContentResolver contentResolver;
 
 
-    public static SafeContentResolver newInstance(Context context) {
+    @NonNull
+    public static SafeContentResolver newInstance(@NonNull Context context) {
+        //noinspection ConstantConditions
+        if (context == null) {
+            throw new NullPointerException("Argument 'context' must not be null.");
+        }
+
         ContentResolver contentResolver = context.getContentResolver();
         return new SafeContentResolverApi21(contentResolver);
     }
 
-    protected SafeContentResolver(ContentResolver contentResolver) {
+    protected SafeContentResolver(@NonNull ContentResolver contentResolver) {
         this.contentResolver = contentResolver;
     }
 
-    public InputStream openInputStream(Uri uri) throws FileNotFoundException {
+    @Nullable
+    public InputStream openInputStream(@NonNull Uri uri) throws FileNotFoundException {
+        //noinspection ConstantConditions
+        if (uri == null) {
+            throw new NullPointerException("Argument 'uri' must not be null");
+        }
+
         String scheme = uri.getScheme();
         if (!ContentResolver.SCHEME_FILE.equals(scheme)) {
             return contentResolver.openInputStream(uri);
@@ -58,7 +72,6 @@ public abstract class SafeContentResolver {
             throw new FileNotFoundException("File is owned by the application itself");
         }
 
-
         AssetFileDescriptor fd = new AssetFileDescriptor(parcelFileDescriptor, 0, -1);
         try {
             return fd.createInputStream();
@@ -67,5 +80,5 @@ public abstract class SafeContentResolver {
         }
     }
 
-    protected abstract int getFileUidOrThrow(FileDescriptor fileDescriptor) throws FileNotFoundException;
+    protected abstract int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException;
 }

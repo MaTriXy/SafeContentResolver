@@ -28,6 +28,6 @@ class ErrnoException extends Exception {
 
     @Override
     public String getMessage() {
-        return functionName + "failed: " + errno;
+        return functionName + " failed: " + errno;
     }
 }

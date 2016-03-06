@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 
 import android.content.ContentResolver;
+import android.support.annotation.NonNull;
 
 
 class SafeContentResolverApi14 extends SafeContentResolver {
@@ -29,7 +30,7 @@ class SafeContentResolverApi14 extends SafeContentResolver {
     }
 
     @Override
-    protected int getFileUidOrThrow(FileDescriptor fileDescriptor) throws FileNotFoundException {
+    protected int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException {
         try {
             int systemFileDescriptor = extractSystemFileDescriptor(fileDescriptor);
 

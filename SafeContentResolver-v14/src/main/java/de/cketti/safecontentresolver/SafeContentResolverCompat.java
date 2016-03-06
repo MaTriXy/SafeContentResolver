@@ -19,10 +19,18 @@ package de.cketti.safecontentresolver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 
 public final class SafeContentResolverCompat {
-    public static SafeContentResolver newInstance(Context context) {
+
+    @NonNull
+    public static SafeContentResolver newInstance(@NonNull Context context) {
+        //noinspection ConstantConditions
+        if (context == null) {
+            throw new NullPointerException("Argument 'context' must not be null");
+        }
+
         ContentResolver contentResolver = context.getContentResolver();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

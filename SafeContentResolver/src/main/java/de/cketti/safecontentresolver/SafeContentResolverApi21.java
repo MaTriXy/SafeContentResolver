@@ -21,6 +21,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 
 import android.content.ContentResolver;
+import android.support.annotation.NonNull;
 import android.system.Os;
 import android.system.StructStat;
 
@@ -31,7 +32,7 @@ final class SafeContentResolverApi21 extends SafeContentResolver {
     }
 
     @Override
-    protected int getFileUidOrThrow(FileDescriptor fileDescriptor) throws FileNotFoundException {
+    protected int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException {
         try {
             StructStat st = Os.fstat(fileDescriptor);
             return st.st_uid;
