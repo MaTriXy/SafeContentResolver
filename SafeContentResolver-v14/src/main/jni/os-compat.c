@@ -40,7 +40,7 @@ Java_de_cketti_safecontentresolver_Os_fstat(JNIEnv *env, jclass type, jint fileD
         jstring functionName = (*env)->NewStringUTF(env, "fstat");
         jobject exception = (*env)->NewObject(env, errnoExceptionClass, constructor, functionName, error);
         (*env)->Throw(env, exception);
-        return NULL;
+        return 0;
     }
 
     return sb.st_uid;
