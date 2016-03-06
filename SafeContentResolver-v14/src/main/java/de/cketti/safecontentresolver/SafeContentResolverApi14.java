@@ -40,13 +40,12 @@ class SafeContentResolverApi14 extends SafeContentResolver {
         }
     }
 
-    private int extractSystemFileDescriptor(FileDescriptor fileDescriptor) {
+    private int extractSystemFileDescriptor(FileDescriptor fileDescriptor) throws FileNotFoundException {
         Field descriptor;
         try {
             descriptor = fileDescriptor.getClass().getDeclaredField("descriptor");
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();    //FIXME
-            return -1;
+            throw new FileNotFoundException("Couldn't find field that holds system file descriptor");
         }
 
         descriptor.setAccessible(true);
@@ -54,8 +53,7 @@ class SafeContentResolverApi14 extends SafeContentResolver {
         try {
             return descriptor.getInt(fileDescriptor);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();    //FIXME
-            return -1;
+            throw new FileNotFoundException("Couldn't read system file descriptor");
         }
     }
 }
