@@ -1,15 +1,15 @@
-apply plugin: 'com.android.model.library'
+apply plugin: 'com.android.library'
+apply from: '../android-mvn-push.gradle'
 
-model {
-    android {
-        compileSdkVersion 23
-        buildToolsVersion "23.0.2"
-
-        defaultConfig {
-            minSdkVersion.apiLevel 21
-        }
-    }
+ext {
+    artifactId = "safe-content-resolver-v21"
 }
 
-dependencies {
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 21
+    }
 }

@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle-experimental:0.6.0-beta5"
+        classpath "com.android.tools.build:gradle:1.5.0"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,4 +20,28 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    pom = [
+            group: "de.cketti.safecontentresolver",
+            name: "SafeContentResolver",
+            version: "0.0.1",
+            description: "A replacement for Android's ContentResolver to safely open file:// URIs provided by other apps",
+            url: "https://github.com/cketti/SafeContentResolver",
+
+            scmUrl: "https://github.com/cketti/SafeContentResolver",
+            scmConnection: "scm:git@github.com:cketti/SafeContentResolver.git",
+            scmDevConnection: "scm:git@github.com:cketti/SafeContentResolver.git",
+
+            licenseName: "The Apache Software License, Version 2.0",
+            licenseUrl: "http://www.apache.org/licenses/LICENSE-2.0.txt",
+            licenseDist: "repo",
+
+            developerId: "cketti",
+            developerName: "cketti"
+    ]
+
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.2"
 }

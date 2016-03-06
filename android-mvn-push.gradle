@@ -1,0 +1,82 @@
+if (!(hasProperty("nexusUsername") && hasProperty("nexusPassword"))) {
+    return;
+}
+
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+afterEvaluate { project ->
+    project.version = rootProject.pom.version
+    project.group = rootProject.pom.group
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.artifactId = project.artifactId
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: nexusUsername, password: nexusPassword)
+                }
+
+                pom.project {
+                    name rootProject.pom.name
+                    packaging 'aar'
+                    description rootProject.pom.description
+                    url rootProject.pom.url
+
+                    scm {
+                        url rootProject.pom.scmUrl
+                        connection rootProject.pom.scmConnection
+                        developerConnection rootProject.pom.scmDevConnection
+                    }
+
+                    licenses {
+                        license {
+                            name rootProject.pom.licenseName
+                            url rootProject.pom.licenseUrl
+                            distribution rootProject.pom.licenseDist
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id rootProject.pom.developerId
+                            name rootProject.pom.developerName
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+        options {
+            linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+        }
+    }
+
+    task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        classifier = 'javadoc'
+        from androidJavadocs.destinationDir
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    artifacts {
+        archives androidSourcesJar
+        archives androidJavadocsJar
+    }
+}
