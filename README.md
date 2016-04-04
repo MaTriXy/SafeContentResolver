@@ -5,7 +5,7 @@ that protects against the *Surreptitious Sharing* attack.
 
 ## Surreptitious Sharing
 
-Read all about it: <link>
+Read all about it in the [corresponding blog post](https://www.ibr.cs.tu-bs.de/news/ibr/surreptitious-sharing-2016-04-04.xml).
 
 ## Usage
 
