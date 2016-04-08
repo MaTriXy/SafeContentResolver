@@ -39,7 +39,8 @@ public final class SafeContentResolverCompat {
      * Create a {@code SafeContentResolver} instance appropriate for the Android version the app is running on.
      *
      * @param context
-     *         {@link Context} used to retrieve a {@link ContentResolver} instance.
+     *         {@link Context} used to retrieve a {@link ContentResolver} instance and the list of content providers
+     *         of this application.
      */
     @NonNull
     public static SafeContentResolver newInstance(@NonNull Context context) {
@@ -48,12 +49,10 @@ public final class SafeContentResolverCompat {
             throw new NullPointerException("Argument 'context' must not be null");
         }
 
-        ContentResolver contentResolver = context.getContentResolver();
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return new SafeContentResolverApi14(contentResolver);
+            return new SafeContentResolverApi14(context);
         } else {
-            return new SafeContentResolverApi21(contentResolver);
+            return new SafeContentResolverApi21(context);
         }
     }
 }

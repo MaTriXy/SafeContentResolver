@@ -48,7 +48,7 @@ public class ShareReceiverActivity extends AppCompatActivity {
 
         try {
             String streamContents = readStreamContentsTraditional(streamUri);
-            extraStreamContentsTraditional.setText(streamContents);
+            extraStreamContentsTraditional.setText(String.format("\"%s\"", streamContents.trim()));
         } catch (FileNotFoundException e) {
             extraStreamContentsTraditional.setText("Error opening file: " + e.getMessage());
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class ShareReceiverActivity extends AppCompatActivity {
 
         try {
             String streamContents = readStreamContentsSafe(streamUri);
-            extraStreamContentsSafe.setText(streamContents);
+            extraStreamContentsSafe.setText(String.format("\"%s\"", streamContents.trim()));
         } catch (FileNotFoundException e) {
             extraStreamContentsSafe.setText("Error opening file: " + e.getMessage());
         } catch (IOException e) {

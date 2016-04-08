@@ -20,13 +20,13 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 
-import android.content.ContentResolver;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 
 class SafeContentResolverApi14 extends SafeContentResolver {
-    SafeContentResolverApi14(ContentResolver contentResolver) {
-        super(contentResolver);
+    SafeContentResolverApi14(Context context) {
+        super(context);
     }
 
     @Override

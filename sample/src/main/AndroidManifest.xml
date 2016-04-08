@@ -20,10 +20,27 @@
         <activity android:name=".ShareReceiverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-                <data android:mimeType="x-test/madeup"/>
+                <data android:mimeType="x-test/madeup" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".SampleContentProvider"
+            android:authorities="de.cketti.safecontentresolver.sample"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS"
+                android:value="true" />
+
+        </provider>
+
+        <provider
+            android:name=".SampleInternalContentProvider"
+            android:authorities="de.cketti.safecontentresolver.sample.internal"
+            android:exported="false" />
 
     </application>
 

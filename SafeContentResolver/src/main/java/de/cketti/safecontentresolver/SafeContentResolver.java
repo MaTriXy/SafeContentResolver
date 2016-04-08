@@ -22,12 +22,20 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ProviderInfo;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,8 +60,19 @@ import android.support.annotation.Nullable;
  * If your app is a receiver of such {@code Intents} and you want to protect against this attack, replace all
  * occurrences of {@link ContentResolver#openInputStream(Uri)} with {@link SafeContentResolver#openInputStream(Uri)}
  * from this class. {@code SafeContentResolver} will refuse to open {@code file://} URIs pointing to files belonging to
- * this app.
+ * this app and {@code content://} URIs belonging to {@code ContentProvider}s of this app.
  * </p><p>
+ * If you wish to allow access to certain content providers of your app, add the following {@code <meta-data>} element
+ * to the appropriate {@code <provider>} entries in your manifest:
+ * </p>
+ * <pre><code>
+ * &lt;provider …&gt;
+ *    &lt;meta-data
+ *        android:name="de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS"
+ *        android:value="true" /&gt;
+ * &lt;/provider&gt;
+ * </code></pre>
+ * <p>
  * On older Android versions apps have the ability to create <a href="https://en.wikipedia.org/wiki/Hard_link">hard
  * links</a> to files they don't have read or write access to. That means we can't simply check the absolute file path
  * to learn if a file is stored in our own app-private directory. Instead, we use the {@code fstat} system call to
@@ -61,14 +80,20 @@ import android.support.annotation.Nullable;
  * </p>
  */
 public abstract class SafeContentResolver {
+    private static final String META_DATA_KEY_ALLOW_INTERNAL_ACCESS =
+            "de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS";
+
+
     private final ContentResolver contentResolver;
+    private final Set<String> blacklistedAuthorities;
 
 
     /**
      * Create a {@link SafeContentResolver} instance.
      *
      * @param context
-     *         {@link Context} used to retrieve a {@link ContentResolver} instance.
+     *         {@link Context} used to retrieve a {@link ContentResolver} instance and the list of content providers
+     *         of this application.
      */
     @NonNull
     public static SafeContentResolver newInstance(@NonNull Context context) {
@@ -77,12 +102,12 @@ public abstract class SafeContentResolver {
             throw new NullPointerException("Argument 'context' must not be null.");
         }
 
-        ContentResolver contentResolver = context.getContentResolver();
-        return new SafeContentResolverApi21(contentResolver);
+        return new SafeContentResolverApi21(context);
     }
 
-    protected SafeContentResolver(@NonNull ContentResolver contentResolver) {
-        this.contentResolver = contentResolver;
+    protected SafeContentResolver(@NonNull Context context) {
+        this.contentResolver = context.getContentResolver();
+        this.blacklistedAuthorities = getBlacklistedContentProviderAuthorities(context);
     }
 
     /**
@@ -109,6 +134,14 @@ public abstract class SafeContentResolver {
         }
 
         String scheme = uri.getScheme();
+        if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            String authority = uri.getAuthority();
+            if (blacklistedAuthorities.contains(authority)) {
+                throw new FileNotFoundException("content URI is owned by the application itself. " +
+                        "Content provider is not whitelisted: " + authority);
+            }
+        }
+
         if (!ContentResolver.SCHEME_FILE.equals(scheme)) {
             return contentResolver.openInputStream(uri);
         }
@@ -131,4 +164,37 @@ public abstract class SafeContentResolver {
     }
 
     protected abstract int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException;
+
+    private Set<String> getBlacklistedContentProviderAuthorities(Context context) {
+        ProviderInfo[] providers = getProviderInfo(context);
+
+        Set<String> blacklistedAuthorities = new HashSet<>(providers.length);
+        for (ProviderInfo providerInfo : providers) {
+            if (!isContentProviderWhitelisted(providerInfo)) {
+                String[] authorities = providerInfo.authority.split(";");
+                Collections.addAll(blacklistedAuthorities, authorities);
+            }
+        }
+
+        return blacklistedAuthorities;
+    }
+
+    private ProviderInfo[] getProviderInfo(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            String packageName = context.getPackageName();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName,
+                    PackageManager.GET_PROVIDERS | PackageManager.GET_META_DATA);
+
+            ProviderInfo[] providers = packageInfo.providers;
+            return providers != null ? providers : new ProviderInfo[0];
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isContentProviderWhitelisted(ProviderInfo providerInfo) {
+        Bundle metaData = providerInfo.metaData;
+        return metaData != null && metaData.getBoolean(META_DATA_KEY_ALLOW_INTERNAL_ACCESS, false);
+    }
 }

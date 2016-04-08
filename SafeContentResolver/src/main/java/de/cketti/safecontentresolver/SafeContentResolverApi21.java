@@ -20,15 +20,15 @@ package de.cketti.safecontentresolver;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 
-import android.content.ContentResolver;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.system.Os;
 import android.system.StructStat;
 
 
 final class SafeContentResolverApi21 extends SafeContentResolver {
-    SafeContentResolverApi21(ContentResolver contentResolver) {
-        super(contentResolver);
+    SafeContentResolverApi21(Context context) {
+        super(context);
     }
 
     @Override
