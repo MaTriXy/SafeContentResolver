@@ -12,6 +12,18 @@ Read all about it in the [corresponding blog post](https://www.ibr.cs.tu-bs.de/n
 Replace all occurrences of [`ContentResolver.openInputStream()`](https://developer.android.com/reference/android/content/ContentResolver.html#openInputStream(android.net.Uri))
 where URIs provided by other apps are opened with `SafeContentResolver.openInputStream()`.
 
+`SafeContentResolver` will refuse to open `file://` URIs pointing to files belonging to your app and `content://` URIs
+belonging to content providers of your app.  
+If you wish to allow access to certain content providers, add the following `<meta-data>` element to the appropriate
+`<provider>` entries in your manifest:
+```xml
+<provider … >
+    <meta-data
+        android:name="de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS"
+        android:value="true" />
+</provider>
+```
+
 The library comes in two flavors `safe-content-resolver-v14` and `safe-content-resolver-v21`. The former includes
 native code to be able to invoke the `fstat` system call that is used to retrieve the owner of a file. Starting with
 Lollipop (API 21) the framework includes the class [`Os`](https://developer.android.com/reference/android/system/Os.html)
