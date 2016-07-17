@@ -22,20 +22,12 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ProviderInfo;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,12 +72,8 @@ import android.support.annotation.Nullable;
  * </p>
  */
 public abstract class SafeContentResolver {
-    private static final String META_DATA_KEY_ALLOW_INTERNAL_ACCESS =
-            "de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS";
-
-
     private final ContentResolver contentResolver;
-    private final Set<String> blacklistedAuthorities;
+    private final Blacklist blacklist;
 
 
     /**
@@ -107,7 +95,7 @@ public abstract class SafeContentResolver {
 
     protected SafeContentResolver(@NonNull Context context) {
         this.contentResolver = context.getContentResolver();
-        this.blacklistedAuthorities = getBlacklistedContentProviderAuthorities(context);
+        this.blacklist = new Blacklist(context);
     }
 
     /**
@@ -136,7 +124,7 @@ public abstract class SafeContentResolver {
         String scheme = uri.getScheme();
         if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             String authority = uri.getAuthority();
-            if (blacklistedAuthorities.contains(authority)) {
+            if (blacklist.isBlacklisted(authority)) {
                 throw new FileNotFoundException("content URI is owned by the application itself. " +
                         "Content provider is not whitelisted: " + authority);
             }
@@ -164,37 +152,4 @@ public abstract class SafeContentResolver {
     }
 
     protected abstract int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException;
-
-    private Set<String> getBlacklistedContentProviderAuthorities(Context context) {
-        ProviderInfo[] providers = getProviderInfo(context);
-
-        Set<String> blacklistedAuthorities = new HashSet<>(providers.length);
-        for (ProviderInfo providerInfo : providers) {
-            if (!isContentProviderWhitelisted(providerInfo)) {
-                String[] authorities = providerInfo.authority.split(";");
-                Collections.addAll(blacklistedAuthorities, authorities);
-            }
-        }
-
-        return blacklistedAuthorities;
-    }
-
-    private ProviderInfo[] getProviderInfo(Context context) {
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName,
-                    PackageManager.GET_PROVIDERS | PackageManager.GET_META_DATA);
-
-            ProviderInfo[] providers = packageInfo.providers;
-            return providers != null ? providers : new ProviderInfo[0];
-        } catch (NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean isContentProviderWhitelisted(ProviderInfo providerInfo) {
-        Bundle metaData = providerInfo.metaData;
-        return metaData != null && metaData.getBoolean(META_DATA_KEY_ALLOW_INTERNAL_ACCESS, false);
-    }
 }
