@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 class SafeContentResolverApi14 extends SafeContentResolver {
     SafeContentResolverApi14(Context context) {
         super(context);
+        Os.init(context);
     }
 
     @Override
@@ -35,7 +36,7 @@ class SafeContentResolverApi14 extends SafeContentResolver {
             int systemFileDescriptor = extractSystemFileDescriptor(fileDescriptor);
 
             return Os.fstat(systemFileDescriptor);
-        } catch (ErrnoException e) {
+        } catch (ErrnoException | UnsupportedOperationException e) {
             throw new FileNotFoundException(e.getMessage());
         }
     }

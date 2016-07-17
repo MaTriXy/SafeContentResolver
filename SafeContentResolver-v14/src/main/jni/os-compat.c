@@ -29,7 +29,7 @@
 
 
 JNIEXPORT jint JNICALL
-Java_de_cketti_safecontentresolver_Os_fstat(JNIEnv *env, jclass type, jint fileDescriptor) {
+Java_de_cketti_safecontentresolver_Os_nativeFstat(JNIEnv *env, jclass type, jint fileDescriptor) {
     struct stat sb;
 
     int rc = TEMP_FAILURE_RETRY(fstat(fileDescriptor, &sb));

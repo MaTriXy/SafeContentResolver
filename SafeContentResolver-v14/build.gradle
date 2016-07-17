@@ -20,5 +20,6 @@ android {
 
 dependencies {
     compile project(':SafeContentResolver')
+    compile 'com.getkeepsafe.relinker:relinker:1.2.1'
     compile 'com.android.support:support-annotations:23.2.0'
 }
