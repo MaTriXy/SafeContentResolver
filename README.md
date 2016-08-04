@@ -42,13 +42,13 @@ SafeContentResolver safeContentResolver = SafeContentResolver.newInstance(contex
 ## Include the library
 
 ```groovy
-compile 'de.cketti.safecontentresolver:safe-content-resolver-v14:0.1.0'
+compile 'de.cketti.safecontentresolver:safe-content-resolver-v14:0.9.0'
 ```
 
 Or, if you're using `minSdkVersion` 21 or higher:
 
 ```groovy
-compile 'de.cketti.safecontentresolver:safe-content-resolver-v21:0.1.0'
+compile 'de.cketti.safecontentresolver:safe-content-resolver-v21:0.9.0'
 ```
 
 ## Native code

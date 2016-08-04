@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 0.9.0
+
+_2016-08-04_
+
+ * Use [ReLinker](https://github.com/KeepSafe/ReLinker) to load the os-compat library. This should avoid
+   `UnsatisfiedLinkError` crashes.
+
 ## Version 0.1.0
 
 _2016-04-12_
