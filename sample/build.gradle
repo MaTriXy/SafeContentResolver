@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile project(':SafeContentResolver-v14')
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.squareup.okio:okio:1.6.0'
+    implementation project(':SafeContentResolver-v14')
+    implementation 'com.android.support:appcompat-v7:23.2.0'
+    implementation 'com.squareup.okio:okio:1.6.0'
 }

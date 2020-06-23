@@ -11,15 +11,18 @@ android {
 
     defaultConfig {
         minSdkVersion 14
+    }
 
-        ndk {
-            moduleName "os-compat"
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version "3.10.2"
         }
     }
 }
 
 dependencies {
-    compile project(':SafeContentResolver')
-    compile 'com.getkeepsafe.relinker:relinker:1.2.1'
-    compile 'com.android.support:support-annotations:23.2.0'
+    api project(':SafeContentResolver')
+    implementation 'com.getkeepsafe.relinker:relinker:1.2.1'
+    implementation 'com.android.support:support-annotations:23.2.0'
 }
