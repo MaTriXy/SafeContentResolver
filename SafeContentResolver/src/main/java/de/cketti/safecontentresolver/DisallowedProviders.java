@@ -29,41 +29,42 @@ import android.os.Bundle;
 
 
 /**
- * Stores a (lazily built) list of all of the app's content providers that are not SafeContentResolver-whitelisted.
+ * Stores a (lazily built) list of all of the app's content providers that are not explicitly allowed to be accessed
+ * using SafeContentResolver.
  */
-class Blacklist {
+class DisallowedProviders {
     private static final String META_DATA_KEY_ALLOW_INTERNAL_ACCESS =
             "de.cketti.safecontentresolver.ALLOW_INTERNAL_ACCESS";
 
 
     private final Context context;
-    private Set<String> blacklistedAuthorities;
+    private Set<String> disallowedAuthorities;
 
 
-    Blacklist(Context context) {
+    DisallowedProviders(Context context) {
         this.context = context;
     }
 
-    synchronized boolean isBlacklisted(String authority) {
-        if (blacklistedAuthorities == null) {
-            blacklistedAuthorities = findBlacklistedContentProviderAuthorities();
+    synchronized boolean isDisallowed(String authority) {
+        if (disallowedAuthorities == null) {
+            disallowedAuthorities = findDisallowedContentProviderAuthorities();
         }
 
-        return blacklistedAuthorities.contains(authority);
+        return disallowedAuthorities.contains(authority);
     }
 
-    private Set<String> findBlacklistedContentProviderAuthorities() {
+    private Set<String> findDisallowedContentProviderAuthorities() {
         ProviderInfo[] providers = getProviderInfo(context);
 
-        Set<String> blacklistedAuthorities = new HashSet<>(providers.length);
+        Set<String> disallowedAuthorities = new HashSet<>(providers.length);
         for (ProviderInfo providerInfo : providers) {
-            if (!isContentProviderWhitelisted(providerInfo)) {
+            if (!isContentProviderAllowed(providerInfo)) {
                 String[] authorities = providerInfo.authority.split(";");
-                Collections.addAll(blacklistedAuthorities, authorities);
+                Collections.addAll(disallowedAuthorities, authorities);
             }
         }
 
-        return blacklistedAuthorities;
+        return disallowedAuthorities;
     }
 
     private ProviderInfo[] getProviderInfo(Context context) {
@@ -80,7 +81,7 @@ class Blacklist {
         }
     }
 
-    private boolean isContentProviderWhitelisted(ProviderInfo providerInfo) {
+    private boolean isContentProviderAllowed(ProviderInfo providerInfo) {
         Bundle metaData = providerInfo.metaData;
         return metaData != null && metaData.getBoolean(META_DATA_KEY_ALLOW_INTERNAL_ACCESS, false);
     }

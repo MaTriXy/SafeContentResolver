@@ -74,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class SafeContentResolver {
     private final ContentResolver contentResolver;
-    private final Blacklist blacklist;
+    private final DisallowedProviders disallowedProviders;
 
 
     /**
@@ -96,7 +96,7 @@ public abstract class SafeContentResolver {
 
     protected SafeContentResolver(@NotNull Context context) {
         this.contentResolver = context.getContentResolver();
-        this.blacklist = new Blacklist(context);
+        this.disallowedProviders = new DisallowedProviders(context);
     }
 
     /**
@@ -125,9 +125,9 @@ public abstract class SafeContentResolver {
         String scheme = uri.getScheme();
         if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             String authority = uri.getAuthority();
-            if (blacklist.isBlacklisted(authority)) {
+            if (disallowedProviders.isDisallowed(authority)) {
                 throw new FileNotFoundException("content URI is owned by the application itself. " +
-                        "Content provider is not whitelisted: " + authority);
+                        "Content provider is not explicitly allowed: " + authority);
             }
         }
 
