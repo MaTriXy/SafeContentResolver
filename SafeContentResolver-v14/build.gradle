@@ -24,5 +24,5 @@ android {
 dependencies {
     api project(':SafeContentResolver')
     implementation 'com.getkeepsafe.relinker:relinker:1.4.1'
-    implementation 'com.android.support:support-annotations:23.2.0'
+    implementation 'org.jetbrains:annotations:19.0.0'
 }

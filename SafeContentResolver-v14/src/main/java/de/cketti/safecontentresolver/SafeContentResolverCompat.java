@@ -19,7 +19,8 @@ package de.cketti.safecontentresolver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 
 /**
@@ -42,8 +43,8 @@ public final class SafeContentResolverCompat {
      *         {@link Context} used to retrieve a {@link ContentResolver} instance and the list of content providers
      *         of this application.
      */
-    @NonNull
-    public static SafeContentResolver newInstance(@NonNull Context context) {
+    @NotNull
+    public static SafeContentResolver newInstance(@NotNull Context context) {
         //noinspection ConstantConditions
         if (context == null) {
             throw new NullPointerException("Argument 'context' must not be null");

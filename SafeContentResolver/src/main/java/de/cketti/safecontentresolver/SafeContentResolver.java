@@ -29,8 +29,9 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -83,8 +84,8 @@ public abstract class SafeContentResolver {
      *         {@link Context} used to retrieve a {@link ContentResolver} instance and the list of content providers
      *         of this application.
      */
-    @NonNull
-    public static SafeContentResolver newInstance(@NonNull Context context) {
+    @NotNull
+    public static SafeContentResolver newInstance(@NotNull Context context) {
         //noinspection ConstantConditions
         if (context == null) {
             throw new NullPointerException("Argument 'context' must not be null.");
@@ -93,7 +94,7 @@ public abstract class SafeContentResolver {
         return new SafeContentResolverApi21(context);
     }
 
-    protected SafeContentResolver(@NonNull Context context) {
+    protected SafeContentResolver(@NotNull Context context) {
         this.contentResolver = context.getContentResolver();
         this.blacklist = new Blacklist(context);
     }
@@ -115,7 +116,7 @@ public abstract class SafeContentResolver {
      *         If the provided URI could not be opened or if it points to a file owned by this app.
      */
     @Nullable
-    public InputStream openInputStream(@NonNull Uri uri) throws FileNotFoundException {
+    public InputStream openInputStream(@NotNull Uri uri) throws FileNotFoundException {
         //noinspection ConstantConditions
         if (uri == null) {
             throw new NullPointerException("Argument 'uri' must not be null");
@@ -151,5 +152,5 @@ public abstract class SafeContentResolver {
         }
     }
 
-    protected abstract int getFileUidOrThrow(@NonNull FileDescriptor fileDescriptor) throws FileNotFoundException;
+    protected abstract int getFileUidOrThrow(@NotNull FileDescriptor fileDescriptor) throws FileNotFoundException;
 }
