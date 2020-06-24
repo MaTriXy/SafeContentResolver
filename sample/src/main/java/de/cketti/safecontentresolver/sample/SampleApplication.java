@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 
 import okio.BufferedSink;
 import okio.Okio;
@@ -19,7 +21,13 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        disableFileUriExposedException();
         createInternalFileIfNecessary();
+    }
+
+    private void disableFileUriExposedException() {
+        // We're lazy and just disable all StrictMode.VmPolicy checks
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().build());
     }
 
     private void createInternalFileIfNecessary() {
