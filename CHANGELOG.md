@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Version 1.0.0
+
+_2020-06-24_
+
+ * Removed dependency on com.android.support:support-annotations so the library doesn't have to be jetified
+   when used in an app with AndroidX.
+ * Updated to ReLinker 1.4.1
+ * Supported ABIs: armeabi-v7a, arm64-v8a, x86, x86_64
+
 ## Version 0.9.0
 
 _2016-08-04_
@@ -29,4 +38,4 @@ _2016-04-12_
 
 _2016-04-04_
 
- * Initital release
+ * Initial release

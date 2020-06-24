@@ -42,28 +42,25 @@ SafeContentResolver safeContentResolver = SafeContentResolver.newInstance(contex
 ## Include the library
 
 ```groovy
-compile 'de.cketti.safecontentresolver:safe-content-resolver-v14:0.9.0'
+implementation 'de.cketti.safecontentresolver:safe-content-resolver-v14:1.0.0'
 ```
 
 Or, if you're using `minSdkVersion` 21 or higher:
 
 ```groovy
-compile 'de.cketti.safecontentresolver:safe-content-resolver-v21:0.9.0'
+implementation 'de.cketti.safecontentresolver:safe-content-resolver-v21:1.0.0'
 ```
 
 ## Native code
 
 `safe-content-resolver-v14` contains native code for the following ABIs:
-* armeabi
 * armeabi-v7a
 * arm64-v8a
 * x86
 * x86_64
-* mips
-* mips64
 
 If you don't want to include all of them in your APK you might want to look into
-[ABIs Splits](http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits#TOC-ABIs-Splits).
+[ABIs Splits](https://developer.android.com/studio/build/configure-apk-splits.html#configure-abi-split).
 
 
 ## License

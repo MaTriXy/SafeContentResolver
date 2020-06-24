@@ -30,7 +30,7 @@ ext {
     pom = [
             group: "de.cketti.safecontentresolver",
             name: "SafeContentResolver",
-            version: "0.9.0",
+            version: "1.0.0",
             description: "A replacement for Android's ContentResolver to safely open URIs provided by other apps",
             url: "https://github.com/cketti/SafeContentResolver",
 
